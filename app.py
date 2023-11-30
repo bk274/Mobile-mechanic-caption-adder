@@ -1,9 +1,9 @@
 from flask import Flask, render_template, request, send_file
 from werkzeug.utils import secure_filename
-import os
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFont, ExifTags
 import random
 import textwrap
+import os
 
 app = Flask(__name__)
 
@@ -49,6 +49,32 @@ def calculate_text_color(background_color):
     text_color = (255, 255, 255) if luminance < 128 else (0, 0, 0)
     return text_color
 
+def fix_image_orientation(image_path):
+    try:
+        image = Image.open(image_path)
+
+        # Check for orientation in EXIF and rotate if necessary
+        for orientation in ExifTags.TAGS.keys():
+            if ExifTags.TAGS[orientation] == 'Orientation':
+                break
+
+        exif = dict(image._getexif().items())
+
+        if exif[orientation] == 3:
+            image = image.rotate(180, expand=True)
+        elif exif[orientation] == 6:
+            image = image.rotate(270, expand=True)
+        elif exif[orientation] == 8:
+            image = image.rotate(90, expand=True)
+
+        # Save the fixed image
+        image.save(image_path)
+        image.close()
+
+    except (AttributeError, KeyError, IndexError):
+        # Cases: image doesn't have EXIF data or doesn't need rotation
+        pass
+
 def add_caption_to_image(input_image_path, output_image_path, user_caption):
     image = Image.open(input_image_path)
     image_width, image_height = image.size
@@ -58,7 +84,7 @@ def add_caption_to_image(input_image_path, output_image_path, user_caption):
 
     # Customize font and style for caption1
     font_size1 = int(min(image_width, image_height) * 0.06)
-    flashy_font_path1 = flashy_font_path1 = "NovaSquare-Regular.ttf"  # Replace with the path to your downloaded TTF file
+    flashy_font_path1 = "path/to/NovaSquare-Regular.ttf"  # Replace with the path to your downloaded TTF file
     flashy_font1 = ImageFont.truetype(font=flashy_font_path1, size=font_size1)
 
     # Choose random background color
@@ -134,8 +160,7 @@ def add_caption_to_image(input_image_path, output_image_path, user_caption):
 
     # Customize font and style for user caption
     font_size2 = int(min(image_width, image_height) * 0.06)
-    flashy_font_path2 = flashy_font_path1 = "NovaSquare-Regular.ttf" # Replace with the path to your downloaded TTF file
-  # Replace with the path to your downloaded TTF file
+    flashy_font_path2 = "path/to/NovaSquare-Regular.ttf"  # Replace with the path to your downloaded TTF file
     flashy_font2 = ImageFont.truetype(font=flashy_font_path2, size=font_size2)
 
     # Wrap the text to fit within the box for the second box
@@ -207,8 +232,8 @@ def process_image():
 
     file = request.files['file']
 
-    # If user does not select file, browser also
-    # submit an empty part without filename
+    # If the user does not select a file, the browser also
+    # submits an empty part without a filename
     if file.filename == '':
         return {"message": "No selected file", "result": "error"}
 
@@ -245,9 +270,7 @@ def reprocess_image():
     processed_image_path = add_caption_to_image(original_file_path, 'output_image.jpg', caption)
 
     # Return the updated processed image for display
-    return render_template('results.html', processed_image=processed_image_path, download_link='/static/output_image.jpg')
-
-
+    return render_template('result.html', processed_image=processed_image_path, download_link='/static/output_image.jpg')
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
