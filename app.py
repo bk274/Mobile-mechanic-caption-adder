@@ -84,7 +84,7 @@ def add_caption_to_image(input_image_path, output_image_path, user_caption):
 
     # Customize font and style for caption1
     font_size1 = int(min(image_width, image_height) * 0.06)
-    flashy_font_path1 = "path/to/NovaSquare-Regular.ttf"  # Replace with the path to your downloaded TTF file
+    flashy_font_path1 = "NovaSquare-Regular.ttf"  # Replace with the path to your downloaded TTF file
     flashy_font1 = ImageFont.truetype(font=flashy_font_path1, size=font_size1)
 
     # Choose random background color
@@ -160,7 +160,7 @@ def add_caption_to_image(input_image_path, output_image_path, user_caption):
 
     # Customize font and style for user caption
     font_size2 = int(min(image_width, image_height) * 0.06)
-    flashy_font_path2 = "path/to/NovaSquare-Regular.ttf"  # Replace with the path to your downloaded TTF file
+    flashy_font_path2 = "NovaSquare-Regular.ttf"  # Replace with the path to your downloaded TTF file
     flashy_font2 = ImageFont.truetype(font=flashy_font_path2, size=font_size2)
 
     # Wrap the text to fit within the box for the second box
