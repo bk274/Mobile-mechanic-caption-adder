@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Processed Image</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f8f8;
+            text-align: center;
+            margin: 50px;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            margin-top: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        a {
+            display: block;
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #4caf50;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+
+        a:hover {
+            background-color: #45a049;
+        }
+
+        input[type="hidden"],
+        button {
+            display: block;
+            margin: 20px auto;
+            padding: 10px;
+            background-color: #4caf50;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>Processed Image</h1>
+    <img id="processedImage" src="{{ processed_image }}" alt="Processed Image">
+    <br>
+    <a id="downloadLink" href="{{ download_link }}" download="processed_image.jpg">Download Processed Image</a>
+    <!-- Add a hidden input field for the original file path -->
+    <input type="hidden" name="original_file_path" value="{{ original_file_path }}">
+    <!-- Add a button to reprocess the request -->
+    <button type="button" onclick="reloadClear()">Reprocess Image</button>
+    <script>
+function reloadClear() {
+  window.localStorage.clear();
+  window.location.reload(true);
+  return false;
+}
+    </script>
+</body>
+</html>
+
+
